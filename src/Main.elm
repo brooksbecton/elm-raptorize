@@ -33,9 +33,9 @@ type alias Model =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Model False (Time.millisToPosix 0) 0 0 Time.utc
+init : { date : Int, secret : String } -> ( Model, Cmd Msg )
+init { date } =
+    ( Model False (Time.millisToPosix date) 0 0 Time.utc
     , Cmd.none
     )
 
@@ -55,7 +55,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         MoveRaptorLeft newTime ->
-            ( if model.isRaptoring then { model | x = model.x + 10 } else model
+            ( if model.isRaptoring then
+                { model | x = model.x + 10 }
+
+              else
+                model
             , Cmd.none
             )
 
@@ -82,7 +86,6 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     onAnimationFrame MoveRaptorLeft
-    
 
 
 theme : { secondary : Color, primary : Color }
@@ -99,7 +102,7 @@ theme =
 view : Model -> Html Msg
 view model =
     div []
-        [  p []
+        [ p []
             [ text
                 (if model.isRaptoring then
                     "Rarrrrr"
